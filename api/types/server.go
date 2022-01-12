@@ -353,6 +353,22 @@ func (s *ServerV2) CheckAndSetDefaults() error {
 	return nil
 }
 
+// MatchSearch goes through select field values and tries to
+// match against the list of search values.
+func (s *ServerV2) MatchSearch(values []string) bool {
+	var fieldVals []string
+	var custom func(val string) bool
+
+	if s.GetKind() == KindNode {
+		fieldVals = []string{s.GetHostname(), s.GetAddr()}
+		custom = func(val string) bool {
+			return strings.EqualFold(val, "tunnel") && s.GetUseTunnel()
+		}
+	}
+
+	return MatchSearch(fieldVals, values, custom)
+}
+
 // DeepCopy creates a clone of this server value
 func (s *ServerV2) DeepCopy() Server {
 	return proto.Clone(s).(*ServerV2)

@@ -81,12 +81,10 @@ func (s *WindowsDesktopServiceV3) GetTeleportVersion() string {
 
 // WindowsDesktop represents a Windows desktop host.
 type WindowsDesktop interface {
-	// Resource provides common resource methods.
-	Resource
+	// ResourceWithLabels provides common resource methods.
+	ResourceWithLabels
 	// GetAddr returns the network address of this host.
 	GetAddr() string
-	// GetAllLabels returns combined static and dynamic labels.
-	GetAllLabels() map[string]string
 	// LabelsString returns all labels as a string.
 	LabelsString() string
 	// GetDomain returns the ActiveDirectory domain of this host.
@@ -159,4 +157,11 @@ func (d *WindowsDesktopV3) Origin() string {
 // SetOrigin sets the origin value of the resource.
 func (d *WindowsDesktopV3) SetOrigin(o string) {
 	d.Metadata.Labels[OriginLabel] = o
+}
+
+// MatchSearch goes through select field values and tries to
+// match against the list of search values.
+func (d *WindowsDesktopV3) MatchSearch(values []string) bool {
+	fieldVals := []string{d.GetName(), d.GetAddr()}
+	return MatchSearch(fieldVals, values, nil)
 }

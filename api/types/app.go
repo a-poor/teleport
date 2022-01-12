@@ -250,6 +250,13 @@ func (a *AppV3) Copy() *AppV3 {
 	return proto.Clone(a).(*AppV3)
 }
 
+// MatchSearch goes through select field values and tries to
+// match against the list of search values.
+func (a *AppV3) MatchSearch(values []string) bool {
+	fieldVals := []string{a.GetName(), a.GetDescription(), a.GetPublicAddr()}
+	return MatchSearch(fieldVals, values, nil)
+}
+
 // setStaticFields sets static resource header and metadata fields.
 func (a *AppV3) setStaticFields() {
 	a.Kind = KindApp
